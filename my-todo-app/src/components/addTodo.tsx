@@ -1,19 +1,24 @@
 "use client";
 import { ChangeEvent, FC, useState } from "react";
 interface Props {
-  createTodo: (value: string) => void;
+  createTodo: (title: string, task: string) => void;
 }
 const AddTodo: FC<Props> = ({ createTodo }) => {
   // State for handling input value
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState({title:"", task: ""});
   // Event handler for input change
-  const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
+  const handleTaskInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setInput({...input,
+        task:e.target.value});
+  };
+  const handleTitleInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setInput({...input,
+        title:e.target.value});
   };
   // Event handler for adding a new todo
   const handleAdd = async () => {
-    createTodo(input);
-    setInput("");
+    createTodo(input.title, input.task);
+    setInput({title:"", task:""});
   };
   // Rendering the AddTodo component
   return (
@@ -22,8 +27,14 @@ const AddTodo: FC<Props> = ({ createTodo }) => {
       <input
         type="text"
         className="w-full px-2 py-1 border border-gray-200 rounded outline-none"
-        onChange={handleInput}
-        value={input}
+        onChange={handleTitleInput}
+        value={input.title}
+      />
+      <input
+        type="text"
+        className="w-full px-2 py-1 border border-gray-200 rounded outline-none"
+        onChange={handleTaskInput}
+        value={input.task}
       />
       {/* Button for adding a new todo */}
       <button

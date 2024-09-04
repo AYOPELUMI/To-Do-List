@@ -1,6 +1,6 @@
 "use client";
 import { FC, useState } from "react";
-import { addTodo, deleteTodo, editTodo, toggleTodo } from "../actions/todoAction";
+import { addTodo, deleteTodo, editTodoTask, editTodoTitle, toggleTodo } from "../actions/todoAction";
 import { todoType } from "../types/todoType";
 import AddTodo from "./addTodo";
 import Todo from "./todo";
@@ -11,17 +11,24 @@ const Todos: FC<Props> = ({ todos }) => {
   // State to manage the list of todo items
   const [todoItems, setTodoItems] = useState<todoType[]>(todos);
   // Function to create a new todo item
-  const createTodo = (text: string) => {
+  const createTodo = (title: string, task: string) => {
     const id = (todoItems.at(-1)?.id || 0) + 1;
-    addTodo(id, text);
-    setTodoItems((prev) => [...prev, { id: id, text, done: false }]);
+    addTodo(id, title,task);
+    setTodoItems((prev) => [...prev, { id: id, task: task,title: title, done: false }]);
   };
   // Function to change the text of a todo item
-  const changeTodoText = (id: number, text: string) => {
+  const changeTodoTask = (id: number, task: string) => {
     setTodoItems((prev) =>
-      prev.map((todo) => (todo.id === id ? { ...todo, text } : todo))
+      prev.map((todo) => (todo.id === id ? { ...todo, task } : todo))
     );
-    editTodo(id, text);
+    editTodoTask(id, task);
+  };
+
+  const changeTodoTitle = (id: number, title: string) => {
+    setTodoItems((prev) =>
+      prev.map((todo) => (todo.id === id ? { ...todo, title } : todo))
+    );
+    editTodoTitle(id, title);
   };
   // Function to toggle the "done" status of a todo item
   const toggleIsTodoDone = (id: number) => {
@@ -45,7 +52,8 @@ const Todos: FC<Props> = ({ todos }) => {
           <Todo
             key={todo.id}
             todo={todo}
-            changeTodoText={changeTodoText}
+            changeTodoTask={changeTodoTask}
+            changeTodoTitle={changeTodoTitle}
             toggleIsTodoDone={toggleIsTodoDone}
             deleteTodoItem={deleteTodoItem}
           />

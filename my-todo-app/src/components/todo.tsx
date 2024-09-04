@@ -3,25 +3,31 @@ import { ChangeEvent, FC, useState } from "react";
 import { todoType } from "../types/todoType";
 interface Props {
   todo: todoType;
-  changeTodoText: (id: number, text: string) => void;
+  changeTodoTask: (id: number, task: string) => void;
+  changeTodoTitle: (id: number, title: string) => void;
   toggleIsTodoDone: (id: number, done: boolean) => void;
   deleteTodoItem: (id: number) => void;
 }
 const Todo: FC<Props> = ({
   todo,
-  changeTodoText,
+  changeTodoTask,
+  changeTodoTitle,
   toggleIsTodoDone,
   deleteTodoItem,
 }) => {
   // State for handling editing mode
   const [editing, setEditing] = useState(false);
   // State for handling text input
-  const [text, setText] = useState(todo.text);
+  const [title, setTitle] = useState(todo.title);
+  const [task, setTask] = useState(todo.task);
   // State for handling "done" status
   const [isDone, setIsDone] = useState(todo.done);
   // Event handler for text input change
-  const handleTextChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setText(e.target.value);
+  const handleTaskChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTask(e.target.value);
+  };
+  const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
   };
   // Event handler for toggling "done" status
   const handleIsDone = async () => {
@@ -34,13 +40,16 @@ const Todo: FC<Props> = ({
   };
   // Event handler for saving the edited text
   const handleSave = async () => {
-    changeTodoText(todo.id, text);
+    changeTodoTask(todo.id, task);
+    changeTodoTitle(todo.id, title);
     setEditing(false);
   };
   // Event handler for canceling the edit mode
   const handleCancel = () => {
     setEditing(false);
-    setText(todo.text);
+    setTitle(todo.title);
+    setTask(todo.task);
+
   };
   // Event handler for deleting a todo item
   const handleDelete = () => {
@@ -61,8 +70,16 @@ const Todo: FC<Props> = ({
       {/* Input field for todo text */}
       <input
         type="text"
-        value={text}
-        onChange={handleTextChange}
+        value={title}
+        onChange={handleTitleChange}
+        readOnly={!editing}
+        className={`${todo.done ? "line-through" : ""
+        } outline-none read-only:border-transparent focus:border border-gray-200 rounded px-2 py-1 w-full`}
+      />
+            <input
+        type="text"
+        value={task}
+        onChange={handleTaskChange}
         readOnly={!editing}
         className={`${todo.done ? "line-through" : ""
         } outline-none read-only:border-transparent focus:border border-gray-200 rounded px-2 py-1 w-full`}

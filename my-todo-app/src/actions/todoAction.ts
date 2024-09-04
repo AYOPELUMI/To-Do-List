@@ -7,10 +7,11 @@ export const getData = async () => {
   const data = await db.select().from(todo);
   return data;
 };
-export const addTodo = async (id: number, text: string) => {
+export const addTodo = async (id: number, title: string, task: string) => {
   await db.insert(todo).values({
     id: id,
-    text: text,
+    title: title,
+    task: task,
   });
 };
 export const deleteTodo = async (id: number) => {
@@ -26,12 +27,21 @@ export const toggleTodo = async (id: number) => {
     .where(eq(todo.id, id));
   revalidatePath("/");
 };
-export const editTodo = async (id: number, text: string) => {
+export const editTodoTask = async (id: number,task: string,) => {
   await db
     .update(todo)
     .set({
-      text: text,
+      task: task,
     })
     .where(eq(todo.id, id));
   revalidatePath("/");
 };
+export const editTodoTitle = async (id: number, title: string) => {
+    await db
+      .update(todo)
+      .set({
+        title: title
+      })
+      .where(eq(todo.id, id));
+    revalidatePath("/");
+  };
